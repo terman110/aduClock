@@ -1,0 +1,63 @@
+*Pick And Place List
+*Company=
+*Author=
+*eMail=
+*
+*Project=clock_0
+*Date=01:25:06
+*CreatedBy=Fritzing 0.8.3b.07.27.048f
+*
+*
+*Coordinates in mm, always center of component
+*Origin 0/0=Lower left corner of PCB
+*Rotation in degree (0-360, math. pos.)
+*
+*No;Value;Package;X;Y;Rotation;Side;Name
+1;;;4.25196;-13.1044;0;Bottom;TXT1
+2;;;3.84011;-15.8326;0;Bottom;TXT1
+3;;;47.1497;-15.4563;0;Bottom;Via1
+4;;;89.6838;-13.077;0;Bottom;TXT1
+5;;;36.6134;-31.5429;0;Bottom;TXT1
+6;10k;THT;59.8497;-4.02627;0;Bottom;10k
+7;;;6.73407;-23.4526;0;Bottom;TXT2
+8;;;49.6897;-15.4563;0;Bottom;Via2
+9;;;29.0875;-31.5429;0;Bottom;TXT1
+10;;THT;31.9097;-29.4263;0;Bottom;Byps
+11;;;72.7881;-2.49756;0;Bottom;IMG3
+12;;;89.7653;-7.55405;0;Bottom;TXT1
+13;;;29.3443;-8.96657;0;Bottom;13kHz
+14;;battcom_20mm_pth;19.2097;-20.2614;90;Bottom;Bat CR2032
+15;;;70.0097;-23.0763;0;Bottom;Via5
+16;;THT;47.1497;-29.4263;0;Bottom;Btn 2
+17;;;89.6712;-10.2822;0;Bottom;TXT1
+18;;THT;1.42974;-16.397;-180;Bottom;8x8 Matrix
+19;;;28.9934;-29.2852;0;Bottom;TXT1
+20;;;72.5582;-23.0763;-90;Bottom;MCU (Arduino nano)
+21;;;3.74603;-20.4422;0;Bottom;TXT1
+22;;;17.2342;-12.0696;0;Bottom;TXT1
+23;;;16.3875;-29.7555;0;Bottom;TXT1
+24;;;7.36254;-23.0101;-90;Bottom;TXT2
+25;;;36.5194;-29.2852;0;Bottom;TXT1
+26;;;44.1394;-29.3792;0;Bottom;TXT1
+27;10k;THT;59.8497;-10.3763;0;Bottom;10k
+28;;;2.69974;-2.75627;0;Bottom;Hole4
+29;;;96.6797;-2.75627;0;Bottom;Hole2
+30;;;47.1497;-9.05923;0;Bottom;Via3
+31;;;6.32159;-9.81182;0;Bottom;TXT1
+32;;;6.05384;-23.0245;-90;Bottom;TXT3
+33;;;4.25196;-10.3763;0;Bottom;TXT1
+34;;;96.6797;-30.6963;0;Bottom;Hole1
+35;;THT;38.2597;-7.83627;0;Bottom;DS1307 RTC
+36;;;8.57936;-14.5155;0;Bottom;TXT1
+37;;;2.69974;-30.6963;0;Bottom;Hole3
+38;;;68.1767;-2.39173;0;Bottom;IMG1
+39;;;78.2931;-2.42796;0;Bottom;IMG4
+40;;THT;6.50974;-7.83627;-180;Bottom;Brightn
+41;;;77.6297;-23.0763;0;Bottom;Via4
+42;;;3.87566;-17.9022;0;Bottom;TXT1
+43;;;89.8594;-4.8259;0;Bottom;TXT1
+44;;;3.59344;-4.91997;0;Bottom;TXT1
+45;;;76.9739;-6.6646;0;Bottom;IMG5
+46;;;44.0453;-31.637;0;Bottom;TXT1
+47;;THT;39.5297;-29.4263;0;Bottom;Btn 1
+48;;THT;92.8697;-7.83627;180;Bottom;Bluetooth
