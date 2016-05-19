@@ -12,7 +12,7 @@ const int charN = 3;
 //  Character array
 const byte NUM[charN][10][WS*8/8] = 
 {
-  // NICE CHARS
+  // 7SEG CHARS
   {
     // 0
     { 
@@ -172,14 +172,14 @@ const byte NUM[charN][10][WS*8/8] =
     // 9
     { 
       B01101001,
-      B10010111,
-      B00010001,
+      B10011001,
+      B01110001,
       B10010110
     }
   }
   ,
   {
-  // BINARY CHAR
+  // NICE CHARS
     // 0
     { 
       B00000000,
@@ -286,4 +286,5 @@ const byte NUM_M[8] =
   B01000010
 };
 #endif // __NUM_CHAR_H__
+
 
