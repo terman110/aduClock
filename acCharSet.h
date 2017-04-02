@@ -40,5 +40,11 @@ class acCharSet
 
     // Get byte
     byte get(char c, int y);
+
+    // Get 3x3 font bool array
+    const bool* get_3x3(int n);
+    
+    // Get 3x3 font bool array
+    const bool* get_3x3(char c);
 };
 #endif // __NUM_CHAR_H__
