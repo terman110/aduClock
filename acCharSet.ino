@@ -1,18 +1,12 @@
-#ifndef __NUM_CHAR_H__
-#define __NUM_CHAR_H__
+#include <Arduino.h>
 
-//  Character width
-const int WS = 4;
+#include "acCharSet.h"
 
-// Selected character sets
-int char_index = 0;
-// Number of character sets
-const int charN = 3;
+#include <EEPROM.h>
 
-//  Character array
-const byte NUM[charN][10][WS*8/8] = 
+const byte NUM[3][10][4] = 
 {
-  // 7SEG CHARS
+  // 7 Segment
   {
     // 0
     { 
@@ -96,7 +90,7 @@ const byte NUM[charN][10][WS*8/8] =
   }
   ,
   {
-  // SEVEN_SEG_CHAR
+  // Cursive
     // 0
     { 
       B01101001,
@@ -172,14 +166,14 @@ const byte NUM[charN][10][WS*8/8] =
     // 9
     { 
       B01101001,
-      B10011001,
-      B01110001,
+      B10010111,
+      B00010001,
       B10010110
     }
   }
   ,
   {
-  // NICE CHARS
+  // Binary
     // 0
     { 
       B00000000,
@@ -262,6 +256,7 @@ const byte NUM[charN][10][WS*8/8] =
   }
 };
 
+
 const byte NUM_H[8] = 
 {
   B01000010,
@@ -285,6 +280,83 @@ const byte NUM_M[8] =
   B01000010,
   B01000010
 };
-#endif // __NUM_CHAR_H__
 
+const byte NUM_B[8] = 
+{
+  B01111100,
+  B01000110,
+  B01000010,
+  B01111100,
+  B01000010,
+  B01000010,
+  B01000110,
+  B01111100
+};
 
+acCharSet::acCharSet()
+{
+  ReadFromEPROM();
+}
+
+acCharSet::acCharSet(enCharSet selectedSet)
+{
+  CurrentSet = selectedSet;
+}
+
+int acCharSet::next()
+{
+  int cur = (int)CurrentSet + 1;
+  if (cur >= Count)
+    cur = (enCharSet)0;
+  CurrentSet = (enCharSet)cur;
+  return cur;
+}
+
+void acCharSet::ReadFromEPROM()
+{
+  int chartmp = EEPROM.read(1);
+  if ( chartmp >= 0 && chartmp < (int)Count)
+    CurrentSet = (enCharSet)chartmp;
+}
+
+void acCharSet::WriteToEPROM()
+{
+  EEPROM.write( 1, (int)CurrentSet);
+}
+
+byte acCharSet::get(int n, int y)
+{
+  if (n >= 0 && n < 10)
+    return get((char)(n + 48), y);
+  return get(' ', y);
+}
+
+byte acCharSet::get(char c, int y)
+{
+  switch(c)
+  {
+    case '0':
+    case '1':
+    case '2':
+    case '3':
+    case '4':
+    case '5':
+    case '6':
+    case '7':
+    case '8':
+    case '9':
+      return (y < 0 || y >= 4) ? 0 : NUM[(int)CurrentSet][(int)c - 48][y];
+    case 'h':
+    case 'H':
+      return (y < 0 || y >= 8) ? 0 : NUM_H[y];
+    case 'm':
+    case 'M':
+      return (y < 0 || y >= 8) ? 0 : NUM_M[y];
+    case 'b':
+    case 'B':
+      return (y < 0 || y >= 8) ? 0 : NUM_B[y];
+    default:
+      return (y < 0 || y >= 4) ? 0 : NUM[(int)Binary][0][y];
+      
+  }
+}
