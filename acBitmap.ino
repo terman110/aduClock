@@ -59,28 +59,6 @@ void acBitmap::clockGenerator(byte h, byte m)
   }
 }
 
-void acBitmap::menuGenerator(int menu, int val) {
-  char charSel;
-  switch(menu)
-  {
-    case 0: charSel = 'H'; break;
-    case 1: charSel = 'M'; break;
-    case 2: charSel = 'B'; break;
-  }
-  
-  for ( int y = 0; y < acGeometry::ElementWidth; y++) {
-    for ( int x = 0; x < acCharSet::NumberWidth; x++)
-    {
-      m_data[y * acGeometry::ElementsNX] = m_char.get(charSel, y);
-      if ( x < 1)
-        bitWrite( m_data[y * acGeometry::ElementsNX + 1], x,         bitRead( (val / 10 <= 0) ? 0 : m_char.get(val / 10, y / 2), 7 - x - (y % 2 * 4)));
-      else
-        bitWrite( m_data[y * acGeometry::ElementsNX + 2], 7 - x + 1, bitRead( (val / 10 <= 0) ? 0 : m_char.get(val / 10, y / 2), 7 - x - (y % 2 * 4)));
-      bitWrite(   m_data[y * acGeometry::ElementsNX + 2], 7 - x - 4, bitRead(                       m_char.get(val % 10, y / 2), 7 - x - (y % 2 * 4)));
-    }
-  }
-}
-
 // Space Invaders
 const byte SI[2][24*8/8] = {
   {
@@ -173,4 +151,3 @@ bool acBitmap::DoAnimate(acTime *tm, unsigned long currentMillis, bool* updateBi
   m_aniMillis = currentMillis;
   return true;
 }
-

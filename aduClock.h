@@ -7,8 +7,6 @@
 //#define BLINK
 
 // PINS
-//  Bypass display button
-const int bypassPin = 7;
 //  Serial Pins
 //const int btRX = 11;
 //const int btTX = 10;
@@ -39,16 +37,6 @@ unsigned long updateMillis = 0;
 unsigned long ifaceMillis = 0;
 //  Time button is pressed
 unsigned long btnMillis = 0;
-//  Is button pressed?
-bool btnPressed = false;
-//  State of user menu
-//    0:  Clock
-//    1:  Set hour
-//    2:  Set minute
-//    3:  Done
-int menuState = 0;
-//  Temporary value in menu
-int menuVal = 0;
 
 // FUNCTIONS
 //  Init MCU

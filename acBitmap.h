@@ -43,9 +43,6 @@ public:
 
     //  Generate four clock digets to bitmap buffer
     void clockGenerator(byte h, byte m);
-
-    // Generate menu entry to bitmap buffer
-    void menuGenerator(int menu, int val);
     
     //  Clear bitmap buffer
     void clear();
