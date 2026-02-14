@@ -37,6 +37,31 @@ void setup()
 }
 
 void loop() {
+  while (Serial.available() > 0) {
+
+    // look for the next valid integer in the incoming serial stream:
+    int h = Serial.parseInt();
+    // do it again:
+    int m = Serial.parseInt();
+    // do it again:
+    int s = Serial.parseInt();
+
+    // look for the newline. That's the end of your sentence:
+    if (Serial.read() == '\n') {
+      Serial.print("New time received: ");
+      Serial.print(h);
+      Serial.print(":");
+      Serial.print(m);
+      Serial.print(":");
+      Serial.println(s);
+      tm.setHour(h);
+      tm.setMinute(m);
+      tm.setSecond(s);
+      tm.writeTime();
+      updateBitmap = true;
+    }
+  }
+
   unsigned long currentMillis = millis();
 
   if (bypassDisp || !bitmap.DoAnimate(&tm, currentMillis, &updateBitmap))
