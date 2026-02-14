@@ -12,6 +12,12 @@ void acBitmap::clear() {
     for ( int x = 0; x < acGeometry::ElementsNX; x++)
       m_data[y * acGeometry::ElementsNX + x] = 0;
 }
+
+void acBitmap::clear(byte *data) {
+  for ( int y = 0; y < acGeometry::ElementWidth; y++)
+    for ( int x = 0; x < acGeometry::ElementsNX; x++)
+      data[y * acGeometry::ElementsNX + x] = 0;
+}
     
 // Are dots blinking?
 bool acBitmap::GetBlink() { return m_blink; }
@@ -62,25 +68,25 @@ void acBitmap::clockGenerator(byte h, byte m)
 // Space Invaders
 const byte SI[2][24*8/8] = {
   {
-  B01000010, B01010100, B00011000,
-  B00100100, B00101010, B00111100,
-  B00111100, B01010100, B01011010,
-  B01011010, B00101010, B11111111,
-  B01111110, B01010100, B11111111,
+  B01000010, B00000000, B00011000,
+  B00100100, B00000000, B00111100,
+  B00111100, B00000000, B01011010,
+  B01011010, B00000000, B11111111,
+  B01111110, B00000000, B11111111,
   B10111101, B00000000, B00100100,
   B10100101, B00000000, B01000010,
-  B00111100, B00011000, B00100100
+  B00111100, B00000000, B00100100
   }
   ,
   {
-  B01000010, B00101010, B00011000,
-  B00100100, B01010100, B00111100,
-  B10111101, B00101010, B01111110,
-  B11011011, B01010100, B11011011,
-  B01111110, B00101010, B11111111,
+  B01000010, B00000000, B00011000,
+  B00100100, B00000000, B00111100,
+  B10111101, B00000000, B01111110,
+  B11011011, B00000000, B11011011,
+  B01111110, B00000000, B11111111,
   B00111100, B00000000, B00100100,
   B00100100, B00000000, B01011010,
-  B11100111, B00011000, B10100101
+  B11100111, B00000000, B10100101
   }
 };
 
@@ -103,26 +109,45 @@ const byte NC[2][24*8/8] = {
   B01100110, B10000101, B10000110,
   B00110011, B10010010, B01111001,
   B11001100, B10100010, B10000101,
-  B01100110, B01111110, B00110001,
-  B10011001, B01001001, B00110010,
+  B01100110, B01111110, B00000001,
+  B10011001, B01001001, B01111010,
   B00000000, B00000000, B11111100
   }
 };
 
+byte ANI[24*8/8] =
+  {
+  B00010000, B00010000, B00001000,
+  B00010000, B00010000, B00001000,
+  B00010000, B00010000, B00001000,
+  B00010000, B00010000, B00001000,
+  B00010000, B00010000, B00001000,
+  B00010000, B00010000, B00001000,
+  B00010000, B00010000, B00001000,
+  B00010000, B00010000, B00001000
+  }
+;
+
 bool acBitmap::DoAnimate(acTime *tm, unsigned long currentMillis, bool* updateBitmap)
 {
+  bool bAnyChanged = false;
+
   if (!m_animate && currentMillis - m_aniStartMilli >= 60000 && (tm->Minute() == 0 || tm->Minute() == 15 || tm->Minute() == 30 || tm->Minute() == 45))
-  //if (!m_animate) // DEBUG MODE
+  // if (!m_animate) // DEBUG MODE
   {
+    Serial.println("Start Animation");
     m_animate = true;
-    m_aniMode = m_aniMode == 0 ? 1 : 0;
+    m_aniMode = random(0, 5 * m_aniNum) / 5;
     m_aniI = 0;
     m_aniStartMilli = currentMillis;
     m_aniBlinkMillis = currentMillis;
+    m_aniFrameMillis = 250;
+    bAnyChanged = true;
   }
 
   if(m_animate && currentMillis - m_aniStartMilli >= 5000)
   {
+    Serial.println("Stop Animation");
     m_animate = false;
     this->clear();
     *updateBitmap = true;
@@ -131,23 +156,167 @@ bool acBitmap::DoAnimate(acTime *tm, unsigned long currentMillis, bool* updateBi
   if (!m_animate)
     return false;
 
-  if (currentMillis - m_aniBlinkMillis >= (unsigned long)250 ) {
-    m_aniI = m_aniI == 0 ? 1 : 0;
+  if (currentMillis - m_aniBlinkMillis >= m_aniFrameMillis) {
+    m_aniI++;
+    bAnyChanged = true;
     m_aniBlinkMillis = currentMillis;
   }
-    
-  byte *data;
-  switch(m_aniMode)
-  {
-    case 0:  // Space Invaders
-      data = (byte*)SI[m_aniI];
-      break;
-    case 1:  // Nyan Cat
-      data = (byte*)NC[m_aniI];
-      break;
-  }
-  memcpy(this->RawData(), data, acGeometry::Width * acGeometry::Height / 8);
   
+  if (bAnyChanged) {
+    byte *data;
+    m_aniFrameMillis = applyPattern(&data, m_aniI);
+    memcpy(this->RawData(), data, acGeometry::Width * acGeometry::Height / 8);
+  }
+
   m_aniMillis = currentMillis;
   return true;
+}
+
+unsigned long acBitmap::applyPattern(byte **data, int aniIdx) {  
+  switch(m_aniMode)
+  {
+    default:
+    case 0:  // Space Invaders
+      *data = (byte*)SI[aniIdx % 2];
+      return 125;
+
+    case 1:  // Nyan Cat
+      m_aniFrameMillis = 200;
+      *data = (byte*)NC[aniIdx % 2];
+      return 200;
+
+    case 2: 
+      *data = (byte*)ANI;
+      applyRainPattern(*data, aniIdx);
+      return 70;
+
+    case 3: 
+      *data = (byte*)ANI;
+      m_aniFrameMillis = 40;
+      applyRandomDots(*data, aniIdx);
+      return 40;
+
+    case 4: 
+      *data = (byte*)ANI;
+      applyWavePattern(*data, aniIdx);
+      return 100;
+
+    case 5: 
+      *data = (byte*)ANI;
+      dopplerPattern(*data, aniIdx);
+      return 80;
+
+    case 6: 
+      *data = (byte*)ANI;
+      circlePattern(*data, aniIdx);
+      return 105;
+  }
+}
+
+void acBitmap::setPixel(byte *data, int x, int y, bool val) {
+  int b = 8 - 1 - (x % 8);
+  int xx = x / 8;
+  int i = xx + (acGeometry::Height - 1 - y) * acGeometry::ElementsNX;
+  bitWrite(data[i], b, val ? (byte)1 : (byte)0);
+}
+
+const int rdNum = 12;
+int rdPos[][rdNum] = { 0 };
+void acBitmap::applyRainPattern(byte *data, int aniIdx) {
+  if (aniIdx < 1) {
+    for(int rd = 0; rd < rdNum; ++rd) {
+      rdPos[0][rd] = random(0, acGeometry::Width);
+      rdPos[1][rd] = random(0, acGeometry::Height);
+    }
+  } else {
+    for(int rd = 0; rd < rdNum; ++rd) {
+      if (rdPos[1][rd] > 0) {
+        rdPos[1][rd]--;
+      } else {
+        rdPos[0][rd] = random(0, acGeometry::Width);
+        rdPos[1][rd] = acGeometry::Height - 1;
+      }
+    }
+  }
+
+  for (int y = 0; y < acGeometry::Height; y++) {
+    for (int x = 0; x < acGeometry::Width; x++) {
+      bool hit = false;
+      for(int rd = 0; rd < rdNum; ++rd) {
+        if (rdPos[0][rd] == x && rdPos[1][rd] == y) {
+          hit = true;
+          break;
+        }
+      }
+      setPixel(data, x, y, hit);
+    }
+  }
+}
+
+void acBitmap::applyRandomDots(byte *data, int aniIdx) {
+  clear(data);
+
+  int numDots = random(5, 30);
+  for (int i = 0; i < numDots; i++) {
+    int x = random(0, acGeometry::Width);
+    int y = random(0, acGeometry::Height);
+      setPixel(data, x, y, true);
+  }
+}
+
+void acBitmap::applyWavePattern(byte *data, int aniIdx) {
+  for (int x = 0; x < acGeometry::Width; x++) {
+
+    float fRad = (((double)x + aniIdx + 3) / (double)acGeometry::Width) * 1.6 * 3.141;
+    double fSin = 0.5 * (sin(fRad) + 1.0);
+    int nThrshld = (int)(fSin * (double)acGeometry::Height);
+
+    for (int y = 0; y < acGeometry::Height; y++) {      
+        setPixel(data, x, y, y <= nThrshld);
+    }
+  }
+}
+
+void acBitmap::dopplerPattern(byte *data, int aniIdx) {
+  clear(data);
+
+  int nHW = acGeometry::Width / 2;
+  for (int x = 0; x < nHW; x++) {
+
+    // Sinc(x)=sin(πx)/(πx) 
+    double pi = 3.141;
+    float fRad = ((double)x / (double)nHW) * (double)aniIdx * 0.35 * pi;
+    double fSin = sin(fRad) / (fRad);
+    bool val = fSin >= 0.0;
+
+    for (int y = 2; y < acGeometry::Height - 2; y++) {
+        setPixel(data, x,                         y, val); 
+        setPixel(data, acGeometry::Width - 1 - x, y, val);
+    }
+  }
+}
+
+void acBitmap::circlePattern(byte *data, int aniIdx) {
+  clear(data);
+
+  int cY = acGeometry::Height / 2;
+  int cX0 = acGeometry::Width / 3;
+  int cX1 = 2 * acGeometry::Width / 3;
+
+  int rL = acGeometry::Width / 3;
+  int rR = aniIdx % (2 * rL);
+  if (rR > rL)
+    rR = (2 * rL) - rR;
+
+  for (int y = 0; y < acGeometry::Height; y++) {
+    for (int x = 0; x < acGeometry::Width; x++) {
+      int x0 = x - cX0;
+      int x1 = x - cX1;
+      int y0 = y - cY;
+      double r0 = sqrt(x0 * x0 + y0 * y0);
+      double r1 = sqrt(x1 * x1 + y0 * y0);
+      bool hit = (r0 >= rR - 0.5 && r0 < rR + 0.5) || (r1 >= rR - 0.5 && r1 < rR + 0.5); 
+      setPixel(data, x, y, hit);
+    }
+  }
 }

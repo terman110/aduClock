@@ -1,7 +1,6 @@
 #include <Arduino.h>
 
 // Libraries to use:
-//  - Bounce2
 //  - DS1307RTC
 //  - Time
 //

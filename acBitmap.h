@@ -19,8 +19,11 @@ protected:
     unsigned long m_aniStartMilli = millis();
     int m_aniMode = 0;
     int m_aniI = 0;
+    unsigned long m_aniFrameMillis = 250;
     unsigned long m_aniMillis = 0;
     unsigned long m_aniBlinkMillis = 0;
+
+    const int m_aniNum = 7;
 
 public:  
     // Constructor
@@ -46,10 +49,19 @@ public:
     
     //  Clear bitmap buffer
     void clear();
+    void clear(byte *data);
 
     void SetAnimate(bool animate) { m_animate = animate; }
     bool GetAnimate() { return m_animate; }
     bool DoAnimate(acTime *tm, unsigned long currentMillis, bool* updateBitmap);
+
+    void setPixel(byte *data, int x, int y, bool val);
+    unsigned long applyPattern(byte **data, int aniIdx);
+    void applyRainPattern(byte *data, int aniIdx);
+    void applyRandomDots(byte *data, int aniIdx);
+    void applyWavePattern(byte *data, int aniIdx);
+    void dopplerPattern(byte *data, int aniIdx);
+    void circlePattern(byte *data, int aniIdx);
 };
 
 #endif // __AC_BITMAP_H__
