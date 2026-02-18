@@ -192,19 +192,19 @@ unsigned long acBitmap::applyPattern(byte **data, int aniIdx) {
 
     case 3: 
       *data = (byte*)ANI;
-      m_aniFrameMillis = 40;
-      applyRandomDots(*data, aniIdx);
-      return 40;
-
-    case 4: 
-      *data = (byte*)ANI;
       applyWavePattern(*data, aniIdx);
       return 100;
 
-    case 5: 
+    case 4: 
       *data = (byte*)ANI;
       dopplerPattern(*data, aniIdx);
       return 80;
+
+    case 5: 
+      *data = (byte*)ANI;
+      m_aniFrameMillis = 40;
+      applyRandomDots(*data, aniIdx);
+      return 40;
 
     case 6: 
       *data = (byte*)ANI;

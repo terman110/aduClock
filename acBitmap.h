@@ -23,7 +23,7 @@ protected:
     unsigned long m_aniMillis = 0;
     unsigned long m_aniBlinkMillis = 0;
 
-    const int m_aniNum = 7;
+    const int m_aniNum = 5;
 
 public:  
     // Constructor
