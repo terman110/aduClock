@@ -31,8 +31,8 @@ captive_portal:
 # UART für Kommunikation mit Arduino
 uart:
   id: uart_bus
-  tx_pin: GPIO15  # TXD2 D8 GPIO15
-  rx_pin: GPIO13  # RXD2 D7 GPIO13
+  tx_pin: GPIO1  # TXD0 TX GPIO1
+  rx_pin: GPIO3  # RXD0 Rx GPIO3 // Only TX is necessary. State is not read from device.
   baud_rate: 9600
 
 # Zeit von Home Assistant synchronisieren
