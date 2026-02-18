@@ -7,10 +7,6 @@
 //#define BLINK
 
 // PINS
-//  Serial Pins
-#include <SoftwareSerial.h>
-const int btRX = 11;
-const int btTX = 10;
 //  RTC pins used by <DS1307RTC.h> (must not be specified)
 // SDA(5) at A4
 // SCL(6) at A5

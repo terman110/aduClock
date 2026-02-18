@@ -135,7 +135,7 @@ bool acBitmap::DoAnimate(acTime *tm, unsigned long currentMillis, bool* updateBi
   if (!m_animate && currentMillis - m_aniStartMilli >= 60000 && (tm->Minute() == 0 || tm->Minute() == 15 || tm->Minute() == 30 || tm->Minute() == 45))
   // if (!m_animate) // DEBUG MODE
   {
-    Serial.println("Start Animation");
+    Serial.println("ani-start");
     m_animate = true;
     m_aniMode = random(0, 5 * m_aniNum) / 5;
     m_aniI = 0;
@@ -147,7 +147,7 @@ bool acBitmap::DoAnimate(acTime *tm, unsigned long currentMillis, bool* updateBi
 
   if(m_animate && currentMillis - m_aniStartMilli >= 5000)
   {
-    Serial.println("Stop Animation");
+    Serial.println("ani-stop");
     m_animate = false;
     this->clear();
     *updateBitmap = true;
