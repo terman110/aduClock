@@ -19,6 +19,8 @@ acTime tm;
 //  Debounce button object
 acDisplay display(2, 3, 4);
 acBitmap bitmap;
+// SoftwareSerial
+SoftwareSerial mySerial (btRX, btTX);
 
 //  Update bitmap?
 bool updateBitmap = true;
@@ -27,6 +29,12 @@ void setup()
 {
   Serial.begin(9600);
   Serial.println("Start init");
+
+  // Define pin modes for TX and RX
+  pinMode(btRX, INPUT);
+  pinMode(btTX, OUTPUT);
+  mySerial.begin(9600);
+  Serial.println("start");
 
   bitmap.clear();
 
@@ -54,6 +62,31 @@ void loop() {
       Serial.print(m);
       Serial.print(":");
       Serial.println(s);
+      tm.setHour(h);
+      tm.setMinute(m);
+      tm.setSecond(s);
+      tm.writeTime();
+      updateBitmap = true;
+    }
+  }
+
+  while (mySerial.available() > 0) {
+
+    // look for the next valid integer in the incoming serial stream:
+    int h = mySerial.parseInt();
+    // do it again:
+    int m = mySerial.parseInt();
+    // do it again:
+    int s = mySerial.parseInt();
+
+    // look for the newline. That's the end of your sentence:
+    if (mySerial.read() == '\n') {
+      mySerial.print("received ");
+      mySerial.print(h);
+      mySerial.print(":");
+      mySerial.print(m);
+      mySerial.print(":");
+      mySerial.println(s);
       tm.setHour(h);
       tm.setMinute(m);
       tm.setSecond(s);
