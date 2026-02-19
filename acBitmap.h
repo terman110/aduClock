@@ -12,28 +12,20 @@ class acBitmap
 protected:
     byte m_data[acGeometry::Width * acGeometry::Height / 8] = {0};
     acCharSet m_char;
-    bool m_blink = false;
-    bool m_blinkState = false;
 
     bool m_animate = false;
     unsigned long m_aniStartMilli = millis();
     int m_aniMode = 0;
     int m_aniI = 0;
     unsigned long m_aniFrameMillis = 250;
+    unsigned long m_aniAniMillis = 0;
     unsigned long m_aniMillis = 0;
-    unsigned long m_aniBlinkMillis = 0;
 
     const int m_aniNum = 5;
 
 public:  
     // Constructor
     acBitmap();
-    
-    // Are dots blinking?
-    bool GetBlink();
-
-    // Blink dots?
-    void SetBlink(bool _blink);
 
     // Get raw data
     byte* RawData() { return (byte*)m_data; }
@@ -41,7 +33,7 @@ public:
     // Used character set
     acCharSet* CharSet() { return &m_char; }
 
-    //  Generate (blinking) dot in bitmap buffer
+    //  Generate dot in bitmap buffer
     void dotGenerator();
 
     //  Generate four clock digets to bitmap buffer

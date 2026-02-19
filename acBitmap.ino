@@ -3,8 +3,7 @@
 #include "acBitmap.h"
 #include "acGeometry.h"
 
-acBitmap::acBitmap() { 
-  m_blink= EEPROM.read(2);
+acBitmap::acBitmap() {
 }
 
 void acBitmap::clear() {
@@ -18,32 +17,18 @@ void acBitmap::clear(byte *data) {
     for ( int x = 0; x < acGeometry::ElementsNX; x++)
       data[y * acGeometry::ElementsNX + x] = 0;
 }
-    
-// Are dots blinking?
-bool acBitmap::GetBlink() { return m_blink; }
-
-// Blink dots?
-void acBitmap::SetBlink(bool _blink)
-{
-  if (m_blink == _blink)
-    return;
-  m_blink = _blink;
-  EEPROM.write (2, (int)m_blink);
-}
 
 void acBitmap::dotGenerator()
-{
-  m_blinkState = m_blink ? !m_blinkState : true;
-  
+{  
   // upper dot
   for ( int y = 1; y <= 2; y++)
     for ( int x = 4; x >= 3; x--)
-      bitWrite( m_data[y * acGeometry::ElementsNX + 1], x, m_blinkState);
+      bitWrite( m_data[y * acGeometry::ElementsNX + 1], x, true);
 
   // lower dot
   for ( int y = 5; y <= 6; y++)
     for ( int x = 4; x >= 3; x--)
-      bitWrite( m_data[y * acGeometry::ElementsNX + 1], x, m_blinkState);
+      bitWrite( m_data[y * acGeometry::ElementsNX + 1], x, true);
 }
 
 void acBitmap::clockGenerator(byte h, byte m)
@@ -135,19 +120,18 @@ bool acBitmap::DoAnimate(acTime *tm, unsigned long currentMillis, bool* updateBi
   if (!m_animate && currentMillis - m_aniStartMilli >= 60000 && (tm->Minute() == 0 || tm->Minute() == 15 || tm->Minute() == 30 || tm->Minute() == 45))
   // if (!m_animate) // DEBUG MODE
   {
-    Serial.println("ani-start");
+    // Serial.println("ani-start");
     m_animate = true;
     m_aniMode = random(0, 5 * m_aniNum) / 5;
     m_aniI = 0;
     m_aniStartMilli = currentMillis;
-    m_aniBlinkMillis = currentMillis;
     m_aniFrameMillis = 250;
     bAnyChanged = true;
   }
 
   if(m_animate && currentMillis - m_aniStartMilli >= 5000)
   {
-    Serial.println("ani-stop");
+    // Serial.println("ani-stop");
     m_animate = false;
     this->clear();
     *updateBitmap = true;
@@ -156,10 +140,10 @@ bool acBitmap::DoAnimate(acTime *tm, unsigned long currentMillis, bool* updateBi
   if (!m_animate)
     return false;
 
-  if (currentMillis - m_aniBlinkMillis >= m_aniFrameMillis) {
+  if (currentMillis - m_aniAniMillis >= m_aniFrameMillis) {
     m_aniI++;
     bAnyChanged = true;
-    m_aniBlinkMillis = currentMillis;
+    m_aniAniMillis = currentMillis;
   }
   
   if (bAnyChanged) {

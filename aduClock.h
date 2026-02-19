@@ -12,28 +12,14 @@
 // SCL(6) at A5
 
 // CONSTANTS
-//  Delay of dot blink
-const int blinkDelay = 1000;
 //  Update time delay
-const int updateDelay= 500;
-//  Delay for byteerface byteeractions
-const int ifaceDelay = 100;
-//  Delay to enter advanced button state
-const int btnPressDelay = 250;
+const int updateDelay= 50;
 
 // VARIABLES
 //  Bypass display output
 bool bypassDisp = false;
-//  Blink dot state
-bool blinkState = false;
-//  Current blink dot millis
-unsigned long blinkMillis = 0;
 //  Current update display millis
 unsigned long updateMillis = 0;
-//  Current byteerface millis
-unsigned long ifaceMillis = 0;
-//  Time button is pressed
-unsigned long btnMillis = 0;
 
 // FUNCTIONS
 //  Init MCU
