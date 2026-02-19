@@ -26,24 +26,12 @@ public:
   int Minute();
   // Get second
   int Second();
-  // Get year
-  int Year();
-  // Get month
-  int Month();
-  // Get day
-  int Day();
   // Set hour
   int setHour(int value);
   // Set minute
   int setMinute(int value);
   // Set second
   int setSecond(int value);
-  // Set year
-  int setYear(int value);
-  // Set month
-  int setMonth(int value);
-  // Set day
-  int setDay(int value);
 
   // Read time from DS1307 IC
   bool readTime();
@@ -53,9 +41,6 @@ public:
   
   //  Get time from compile time constant
   bool parseTimeFromString(const char *str);
-  
-  //  Get time from compile date constant
-  bool parseDateFromString(const char *str);
 
   // Read flag from EPROM
   void readFromEPROM();
