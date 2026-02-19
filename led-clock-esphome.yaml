@@ -39,9 +39,6 @@ uart:
 time:
   - platform: homeassistant
     id: homeassistant_time
-    on_time_sync:
-      then:
-        - uart.write: "status\n"  # Status abfragen, um Zeit zu prüfen
 
 # Switch für Display On/Off
 switch:
@@ -49,6 +46,7 @@ switch:
     name: "LED Clock Display"
     id: display_switch
     optimistic: true
+    restore_mode: ALWAYS_ON
     turn_on_action:
       - uart.write: "on\n"
     turn_off_action:
@@ -61,7 +59,7 @@ button:
       then:
         - lambda: |-
             auto now = id(homeassistant_time).now();
-            char time_str[9];
+            char time_str[13];
             snprintf(time_str, sizeof(time_str), "%02d:%02d:%02d\n",
                      now.hour, now.minute, now.second);
             // Sende die formatierte Zeit als Byte-Array
