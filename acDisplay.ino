@@ -46,4 +46,5 @@ void acDisplay::clearDisplay() {
     }
   }
   digitalWrite(m_latchPin, 1);
+  m_cRow = 0;
 }

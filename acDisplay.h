@@ -29,7 +29,7 @@ public:
     void clearDisplay();
 
     // Next row to be printed is row == 0
-    bool StartingPrint() { return m_cRow == 0; }
+    bool StartingPrint() { return m_cRow <= 0 || m_cRow > acGeometry::ElementHeight; }
     
     // Reverse byte order
     static byte rb( byte x);

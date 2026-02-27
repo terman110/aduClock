@@ -104,23 +104,29 @@ void loop() {
     }
   }
 
-  unsigned long currentMillis = millis();
-
-  if (bypassDisp || !bitmap.DoAnimate(&tm, currentMillis, &updateBitmap))
+  bool bIsAnimation = false;
+  if (!bypassDisp && !(bIsAnimation = bitmap.DoAnimate(&tm)))
   {  
     // Update time
-    if (!bypassDisp && (updateBitmap || currentMillis - updateMillis >= (unsigned long)updateDelay) && display.StartingPrint()) {
-      updateMillis = currentMillis;
-      if (tm.readTime())
-        updateBitmap = true;
+    if (!bypassDisp && !bIsAnimation && display.StartingPrint()) {
+      tm.readTime();
+      updateBitmap = true;
     }
   
+    if (missedRefreshCount >= 1000) {
+      updateBitmap = true;
+    }
+
     // Update clock
     if (updateBitmap) {
       updateBitmap = false;
       bitmap.dotGenerator();
       bitmap.clockGenerator(tm.Hour(), tm.Minute());
     }
+  }
+
+  if (!updateBitmap) {
+    missedRefreshCount++;
   }
 
   display.printBitmap(bitmap);

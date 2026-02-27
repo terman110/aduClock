@@ -50,6 +50,49 @@ void acBitmap::clockGenerator(byte h, byte m)
   }
 }
 
+bool acBitmap::DoAnimate(acTime *tm)
+{
+  unsigned long currentMillis = millis();
+  bool bAnyChanged = false;
+
+  if (!m_animate && currentMillis - m_aniStartMilli >= 60000 && (tm->Minute() == 0 || tm->Minute() == 15 || tm->Minute() == 30 || tm->Minute() == 45))
+  // if (!m_animate) // DEBUG MODE
+  {
+    // Serial.println("ani-start");
+    m_animate = true;
+    m_aniMode = random(0, 5 * m_aniNum) / 5;
+    m_aniI = 0;
+    m_aniStartMilli = currentMillis;
+    m_aniFrameMillis = 250;
+    bAnyChanged = true;
+  }
+
+  if (m_animate && currentMillis - m_aniStartMilli >= 5000UL)
+  {
+    // Serial.println("ani-stop");
+    m_animate = false;
+    this->clear();
+  }
+
+  if (!m_animate)
+    return false;
+
+  if (currentMillis - m_aniAniMillis >= m_aniFrameMillis) {
+    m_aniI++;
+    bAnyChanged = true;
+    m_aniAniMillis = currentMillis;
+  }
+  
+  if (bAnyChanged) {
+    byte *data;
+    m_aniFrameMillis = applyPattern(&data, m_aniI);
+    memcpy(this->RawData(), data, acGeometry::Width * acGeometry::Height / 8);
+  }
+
+  m_aniMillis = currentMillis;
+  return true;
+}
+
 // Space Invaders
 const byte SI[2][24*8/8] = {
   {
@@ -100,6 +143,7 @@ const byte NC[2][24*8/8] = {
   }
 };
 
+// Dynamic animation buffer
 byte ANI[24*8/8] =
   {
   B00010000, B00010000, B00001000,
@@ -112,49 +156,6 @@ byte ANI[24*8/8] =
   B00010000, B00010000, B00001000
   }
 ;
-
-bool acBitmap::DoAnimate(acTime *tm, unsigned long currentMillis, bool* updateBitmap)
-{
-  bool bAnyChanged = false;
-
-  if (!m_animate && currentMillis - m_aniStartMilli >= 60000 && (tm->Minute() == 0 || tm->Minute() == 15 || tm->Minute() == 30 || tm->Minute() == 45))
-  // if (!m_animate) // DEBUG MODE
-  {
-    // Serial.println("ani-start");
-    m_animate = true;
-    m_aniMode = random(0, 5 * m_aniNum) / 5;
-    m_aniI = 0;
-    m_aniStartMilli = currentMillis;
-    m_aniFrameMillis = 250;
-    bAnyChanged = true;
-  }
-
-  if(m_animate && currentMillis - m_aniStartMilli >= 5000)
-  {
-    // Serial.println("ani-stop");
-    m_animate = false;
-    this->clear();
-    *updateBitmap = true;
-  }
-
-  if (!m_animate)
-    return false;
-
-  if (currentMillis - m_aniAniMillis >= m_aniFrameMillis) {
-    m_aniI++;
-    bAnyChanged = true;
-    m_aniAniMillis = currentMillis;
-  }
-  
-  if (bAnyChanged) {
-    byte *data;
-    m_aniFrameMillis = applyPattern(&data, m_aniI);
-    memcpy(this->RawData(), data, acGeometry::Width * acGeometry::Height / 8);
-  }
-
-  m_aniMillis = currentMillis;
-  return true;
-}
 
 unsigned long acBitmap::applyPattern(byte **data, int aniIdx) {  
   switch(m_aniMode)

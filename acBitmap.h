@@ -45,7 +45,7 @@ public:
 
     void SetAnimate(bool animate) { m_animate = animate; }
     bool GetAnimate() { return m_animate; }
-    bool DoAnimate(acTime *tm, unsigned long currentMillis, bool* updateBitmap);
+    bool DoAnimate(acTime *tm);
 
     void setPixel(byte *data, int x, int y, bool val);
     unsigned long applyPattern(byte **data, int aniIdx);

@@ -12,14 +12,12 @@
 // SCL(6) at A5
 
 // CONSTANTS
-//  Update time delay
-const int updateDelay= 50;
 
 // VARIABLES
 //  Bypass display output
 bool bypassDisp = false;
-//  Current update display millis
-unsigned long updateMillis = 0;
+//  How many cycles passed without a redraw?
+unsigned long missedRefreshCount = 0;
 
 // FUNCTIONS
 //  Init MCU
